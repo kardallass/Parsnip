@@ -20,12 +20,21 @@
             <div>&copy; Tara Marchand</div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-        <script src="js/base64_min.js"></script>
-        <script src="js/underscore-min.js"></script>
-        <script src="js/backbone.js"></script>
-        <script src="js/backbone.localStorage-min.js"></script>
-        <script src="js/mustache.js"></script>
-        <script src="js/parsnip.js"></script>
+        <script src="js/libraries/base64_min.js"></script>
+        <script src="js/libraries/underscore-min.js"></script>
+        <script src="js/libraries/backbone.js"></script>
+        <script src="js/libraries/backbone.localStorage-min.js"></script>
+        <script src="js/libraries/mustache.js"></script>
+
+        <script src="js/par.js"></script>
+        <script src="js/apis.js"></script>
+        <script src="js/nyt.js"></script>
+        <script src="js/nyt/models/Story.js"></script>
+        <script src="js/nyt/models/Story_List.js"></script>
+        <script src="js/nyt/views/Story_View.js"></script>
+        <script src="js/nyt/views/Story_List_View.js"></script>
+        <script src="js/App.js"></script>
+        <script src="js/init.js"></script>
     </body>
 </html>
 
