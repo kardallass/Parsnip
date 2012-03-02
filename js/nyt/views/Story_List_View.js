@@ -1,19 +1,24 @@
 par.nyt.Story_List_View =  Backbone.View.extend({
-    id: "story_list",
-    tagName: "section",
-    template: "<h2>{{title}}</h2>",
+    tab_template: "<li><a href=\"#{{version}}\" data-toggle=\"tab\">{{title}}</a></li>",
+    content_template: "<div class=\"tab-pane\" id=\"{{version}}\"></div>",
+    $tab: null,
+    $content: null,
 
     initialize: function() {
+        this.$tab = $(Mustache.render(this.tab_template, this.collection));
+        this.$content = $(Mustache.render(this.content_template, this.collection));
+
+        this.$tab.appendTo("#" + this.options.tab_container_id);
+        this.$content.appendTo("#" + this.options.content_container_id);
         _.bindAll(this, "add_story_view");
-        $(this.el).html(Mustache.render(this.template, this.collection))
-            .insertAfter("#wrapper .page-header");
         this.collection.bind("add", this.add_story_view);
     },
+
     add_story_view: function(story) {
         var story_view = new par.nyt.Story_View({
             model: story
         });
-        $(this.el).append(story_view.render().el);
+        this.$content.append(story_view.render().el);
     }
 });
 

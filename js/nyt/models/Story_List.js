@@ -18,7 +18,7 @@ par.nyt.Story_List = Backbone.Collection.extend({
         };
 
         var self = this,
-            api_values = par.apis[this.provider][this.service],
+            api_values = par[this.provider].apis[this.service],
             path = get_path(),
             data = {
                 "host": api_values.host,
