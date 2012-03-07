@@ -1,3 +1,10 @@
-par.nyt.Story = Backbone.Model.extend({});
+par.nyt.Story = Backbone.Model.extend({
+    defaults: {
+        is_favorite: false
+    },
+
+    initialize: function() {
+    }
+});
 
 

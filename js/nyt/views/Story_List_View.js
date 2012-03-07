@@ -1,6 +1,6 @@
 par.nyt.Story_List_View =  Backbone.View.extend({
-    tab_template: "<li><a href=\"#{{version}}\" data-toggle=\"tab\">{{title}}</a></li>",
-    content_template: "<div class=\"tab-pane\" id=\"{{version}}\"></div>",
+    tab_template: "<li><a href=\"#{{name}}\" data-toggle=\"tab\">{{title}}</a></li>",
+    content_template: "<div class=\"tab-pane\" id=\"{{name}}\"></div>",
     $tab: null,
     $content: null,
 

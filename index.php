@@ -25,7 +25,6 @@
         <script src="js/libraries/base64_min.js"></script>
         <script src="js/libraries/underscore-min.js"></script>
         <script src="js/libraries/backbone.js"></script>
-        <script src="js/libraries/backbone.localStorage-min.js"></script>
         <script src="js/libraries/mustache.js"></script>
         <script src="js/libraries/bootstrap-tab.js"></script>
 

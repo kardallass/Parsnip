@@ -9,6 +9,6 @@ par.nyt.apis.newswire = {
 par.nyt.apis.popular = {
     host: "http://api.nytimes.com",
     port: "80",
-    path: "/svc/mostpopular/v2/{{version}}/all-sections/1/" // {{version}} is "mostemailed", "mostshared", or "mostviewed"
+    path: "/svc/mostpopular/v2/{{version}}/all-sections/1" // {{version}} is "mostemailed", "mostshared", or "mostviewed"
 };
 

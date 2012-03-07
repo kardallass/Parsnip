@@ -1,12 +1,11 @@
 par.nyt.Story_List = Backbone.Collection.extend({
     url: "/proxy/proxy.php",
-    localStorage: null,
     provider: "",
     service: "",
+    favorites_collection: null,
 
     initialize: function(models, options) {
         _.extend(this, options);
-        //this.localStorage = new Store(this.provider + "_" + this.service + "_story_list");
     },
     init_stories: function(more_data) {
         var get_path = function() {
@@ -49,5 +48,4 @@ par.nyt.Story_List = Backbone.Collection.extend({
         });
     }
 });
-
 

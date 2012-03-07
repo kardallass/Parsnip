@@ -1,0 +1,9 @@
+#popular_content .favorite {
+    display: inline-block;
+    text-align: center;
+    width: 3%;
+}
+
+#popular_content .selected {
+    color: #ccc;
+}
