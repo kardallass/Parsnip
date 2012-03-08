@@ -24,12 +24,19 @@ par.App = Backbone.View.extend({
                 category: category,
                 template_values: {
                     category: category,
+                    icon_class: "icon-list-alt",
                     title: "Most Popular - " + category
                 },
                 tab_container_id: "popular_tabs",
                 content_container_id: "popular_content",
                 collection: all_stories
             });
+
+            // add favorite stories list view to end & select first tab 
+            if (category === categories[categories.length - 1]) {
+                create_favorites_list_view();
+                $("#popular_tabs").find("a:first").tab("show");
+            }
 
             // go through all stories and determine which categories they're associated with
             for (var j = 0; j < stories_length; j += 1) {
@@ -51,9 +58,10 @@ par.App = Backbone.View.extend({
 
         var create_favorites_list_view = function() {
             par.App.nyt.favorites = new par.nyt.Story_List_View({
-                category: category,
+                category: "favorites",
                 template_values: {
                     category: "favorites",
+                    icon_class: "icon-heart",
                     title: "My Favorites"
                 },
                 tab_container_id: "popular_tabs",
@@ -92,14 +100,6 @@ par.App = Backbone.View.extend({
                 });
             })(category);
         }
-        // TODO: Figure out how to place at end
-        create_favorites_list_view();
-
-
-
-        //console.dir(all_stories);
-        // select first tab
-        //$("#popular_tabs").find("a:first").tab("show");
     }
 });
 
