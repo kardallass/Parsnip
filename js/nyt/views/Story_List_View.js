@@ -22,13 +22,13 @@ par.nyt.Story_List_View =  Backbone.View.extend({
 
         this.$tab.appendTo("#" + this.options.tab_container_id);
         this.$content.appendTo("#" + this.options.content_container_id);
-
-        //_.bindAll(this, "add_story_view");
-        //this.collection.bind("add", this.add_story_view);
+        // listen for story model categories update
+        _.bindAll(this, "add_story_view");
+        this.collection.bind("change:categories", this.add_story_view);
     },
 
     add_story_view: function(story) {
-        if (_.find(story.get("categories"), function(cat) { return cat === this.category; })) {
+        if (_.indexOf(story.get("categories"), this.category) > -1) {
             var story_view = new par.nyt.Story_View({
                 model: story
             });

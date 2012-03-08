@@ -19,6 +19,7 @@ par.App = Backbone.View.extend({
             new_story,
             new_story_model;
 
+            // create category's story list view
             par.App.nyt[category + "_view"] = new par.nyt.Story_List_View({
                 category: category,
                 template_values: {
@@ -30,18 +31,21 @@ par.App = Backbone.View.extend({
                 collection: all_stories
             });
 
+            // go through all stories and determine which categories they're associated with
             for (var j = 0; j < stories_length; j += 1) {
                 new_story = stories[j];
-                // don't create and add story models for items w/same URLs
+                // use existing story models for items w/same URLs
                 if (!all_stories.any(function(story_model) { return story_model.get("url") === new_story.url })) {
                     new_story_model = new par.nyt.Story(new_story);
                     all_stories.add(new_story_model);
                 } else {
                     new_story_model = all_stories.find(function(story_model) { return story_model.get("url") === new_story.url });
                 }
+                // update story model's associated categories
                 var new_story_categories = new_story_model.get("categories");
                 new_story_categories.push(category);
                 new_story_model.set("categories", new_story_categories);
+                all_stories.trigger("change:categories", new_story_model);
             }
         };
 
