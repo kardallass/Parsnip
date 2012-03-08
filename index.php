@@ -32,7 +32,7 @@
         <script src="js/nyt.js"></script>
         <script src="js/nyt/apis.js"></script>
         <script src="js/nyt/models/Story.js"></script>
-        <script src="js/nyt/models/Story_List.js"></script>
+        <script src="js/nyt/collections/Story_List.js"></script>
         <script src="js/nyt/views/Story_View.js"></script>
         <script src="js/nyt/views/Story_List_View.js"></script>
         <script src="js/App.js"></script>
