@@ -52,12 +52,13 @@ par.App = Backbone.View.extend({
                 var new_story_categories = new_story_model.get("categories");
                 new_story_categories.push(category);
                 new_story_model.set("categories", new_story_categories);
-                all_stories.trigger("change:categories", new_story_model);
+                // custom event triggered for adding story view to story list view
+                all_stories.trigger("change:story:categories", new_story_model);
             }
         };
 
         var create_favorites_list_view = function() {
-            par.App.nyt.favorites = new par.nyt.Story_List_View({
+            par.App.nyt.favorites_view = new par.nyt.Story_List_View({
                 category: "favorites",
                 template_values: {
                     category: "favorites",

@@ -1,38 +1,51 @@
 par.nyt.Story_View = Backbone.View.extend({
     tagName: "article",
     template: "<a href=\"#\" class=\"favorite\"></a> <a href=\"{{url}}\" target=\"_blank\">{{title}}</a>",
-
-    initialize: function() {
-        _.bindAll(this, "change_view_fav");
-        this.model.bind("change:is_favorite", this.change_view_fav);
-    },
+    collection: null,
 
     render: function() {
         this.$el.html(Mustache.render(this.template, this.model.toJSON()));
-        this.change_view_fav();
+        this.toggle_favorite_in_view();
         return this;
     },
 
     events: {
-        "click .favorite": "change_model_fav"
+        "click .favorite": "toggle_favorite"
+    },
+
+    get_is_favorite: function() {
+        var is_favorite = (_.indexOf(this.model.get("categories"), "favorites") > -1) ? true : false;
+        return is_favorite;
     },
 
     // change the "Fav"/"Unfav" link
-    change_view_fav: function() {
-        if (this.model.get("is_favorite")) {
+    toggle_favorite_in_view: function() {
+        var is_favorite = this.get_is_favorite();
+
+        if (is_favorite) {
             this.$el.find(".favorite").addClass("selected").text("Unfav");
         } else {
             this.$el.find(".favorite").removeClass("selected").text("Fav");
         }
     },
 
-    // change the model's is_favorite value
-    change_model_fav: function() {
-        if (this.model.get("is_favorite")) {
-            this.model.set("is_favorite", false);
+    // add "favorite" to or remove from story model's categories
+    toggle_favorite_in_model: function() {
+        var is_favorite = this.get_is_favorite(),
+            story_categories = this.model.get("categories");
+
+        if (!is_favorite) {
+            story_categories.push("favorites");
         } else {
-            this.model.set("is_favorite", true);
+            story_categories = _.without(story_categories, "favorites");
         }
+
+        this.model.set("categories", story_categories);
+    },
+
+    toggle_favorite: function() {
+        this.toggle_favorite_in_model();
+        this.toggle_favorite_in_view();
     }
 });
 
