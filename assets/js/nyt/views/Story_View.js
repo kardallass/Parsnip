@@ -36,8 +36,10 @@ par.nyt.Story_View = Backbone.View.extend({
 
         if (!is_favorite) {
             story_categories.push("favorites");
+            this.model.save();
         } else {
             story_categories = _.without(story_categories, "favorites");
+            this.model.destroy();
         }
 
         this.model.set("categories", story_categories);

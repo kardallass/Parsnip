@@ -29,6 +29,13 @@
         <script src="<?= $this->assets_url ?>js/libraries/mustache.js"></script>
         <script src="<?= $this->assets_url ?>js/libraries/bootstrap-tab.js"></script>
 
+        <script>
+            var par = par || {};
+            par.constants = {
+                assets_url: "<?= $this->assets_url ?>",
+                base_url: "<?= base_url() ?>"
+            };
+        </script>
         <script src="<?= $this->assets_url ?>js/par.js"></script>
         <script src="<?= $this->assets_url ?>js/nyt.js"></script>
         <script src="<?= $this->assets_url ?>js/nyt/apis.js"></script>
