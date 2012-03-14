@@ -83,7 +83,7 @@ par.App = Backbone.View.extend({
 
             // make the ajax call, passing current category value
             (function(cat) {
-                $.ajax("/proxy/proxy.php", {
+                $.ajax("nyt/popular", {
                     data: {
                         "host": api_values.host,
                         "port": api_values.port,
