@@ -10,25 +10,24 @@ class Nyt extends MY_Controller {
 		$this->load->view('nyt');
 	}
 
-    public function popular() {
+    public function popular($category) {
         $this->load->spark('curl/1.2.1');
         include "../api_keys.php";
 
         // params that shouldn't be passed along in request
-        $params_to_exclude = array("charles", "host", "port", "path", "provider", "service");
+        $params_to_exclude = array("charles", "host", "port", "category", "provider", "service");
         $request_method = $_SERVER['REQUEST_METHOD'];
 
         if ($request_method == "GET") {
             $get = $this->input->get();
             $host = $this->input->get("host");
             $port = $this->input->get("port");
-            $path = $this->input->get("path");
-            $url = $host . ":" . $port . $path;
+            $url = $host . ":" . $port . "/svc/mostpopular/v2/" . $category . "/all-sections/1";
 
             $provider = $this->input->get("provider");
             $service = $this->input->get("service");
 
-            if ($host && $port && $path && $provider && $service) {
+            if ($host && $port && $category && $provider && $service) {
                 $query_string = array();
                 while ($element = current($get)) {
                     if (in_array(key($get), $params_to_exclude) == false) {
@@ -51,7 +50,6 @@ class Nyt extends MY_Controller {
             }
 
         }
-
     }
 
     public function favorites($id = 'all') {

@@ -7,9 +7,10 @@ par.App = Backbone.View.extend({
         category_views = [],
         all_stories = new par.nyt.Story_List(),
         name = "",
-        path_vars = null,
         provider = "",
         service = "",
+        api_values = null,
+        ajax_url = "",
         title = "";
 
         var create_stories_and_list_views = function(data, category) {
@@ -74,20 +75,17 @@ par.App = Backbone.View.extend({
         // create popular stories collections & collection views
         for (var i = 0; i < categories.length; i += 1) {
             category = categories[i];
-            path_vars = {
-                category: category
-            };
             provider = "nyt";
             service = "popular";
             api_values = par[provider].apis[service];
+            ajax_url = "nyt/popular/" + category;
 
             // make the ajax call, passing current category value
             (function(cat) {
-                $.ajax("nyt/popular", {
+                $.ajax(ajax_url, {
                     data: {
                         "host": api_values.host,
                         "port": api_values.port,
-                        "path": Mustache.render(api_values.path, path_vars),
                         "provider": provider,
                         "service": service,
                         "charles": par.use_charles
