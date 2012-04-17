@@ -60,7 +60,6 @@ class Nyt extends MY_Controller {
         $nyt_stories = $parsnip->nyt_stories; // database
         $nyt_favorites = $nyt_stories->favorites; // collection
         $request_method = $_SERVER['REQUEST_METHOD'];
-
         if ($id == 'all') {
 
             if ($request_method == "POST") { // POST 'all' -- create all
@@ -76,9 +75,14 @@ class Nyt extends MY_Controller {
                 }
 
             } else if ($request_method == "GET") { // GET 'all' -- read all
-                echo "get all";
-                //$nyt_favorites_cursor = $nyt_favorites.find();
-                //echo json_encode($nyt_favorites_cursor);
+                //echo "get all";
+                $nyt_favorites_cursor = $nyt_favorites->find();
+                $return = array();
+                foreach ($nyt_favorites_cursor as $object) {
+                    array_push($return, $object);
+                }
+                header('Content-Type: application/json');
+                echo json_encode($return);
             }
 
         } else {

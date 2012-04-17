@@ -14,8 +14,7 @@ par.nyt.Story_View = Backbone.View.extend({
     },
 
     get_is_favorite: function() {
-        var is_favorite = (_.indexOf(this.model.get("categories"), "favorites") > -1) ? true : false;
-        return is_favorite;
+        return this.model.get("is_favorite");
     },
 
     // change the "Fav"/"Unfav" link
@@ -31,18 +30,13 @@ par.nyt.Story_View = Backbone.View.extend({
 
     // add "favorite" to or remove from story model's categories
     toggle_favorite_in_model: function() {
-        var is_favorite = this.get_is_favorite(),
-            story_categories = this.model.get("categories");
+        var is_favorite = this.get_is_favorite();
 
         if (!is_favorite) {
-            story_categories.push("favorites");
             this.model.save();
         } else {
-            story_categories = _.without(story_categories, "favorites");
             this.model.destroy();
         }
-
-        this.model.set("categories", story_categories);
     },
 
     toggle_favorite: function() {

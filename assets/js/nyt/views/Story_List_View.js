@@ -11,39 +11,37 @@ par.nyt.Story_List_View =  Backbone.View.extend({
         category: "",
         title: ""
     },
-    rendered_story_cids: null,
 
     initialize: function(options) {
         _.extend(this, options);
 
         this.$tab = $(Mustache.render(this.tab_template, this.template_values));
-        this.$content = $(Mustache.render(this.content_template, this.template_values));
-
         this.$tab.appendTo("#" + this.tab_container_id);
+        this.$content = $(Mustache.render(this.content_template, this.template_values));
         this.$content.appendTo("#" + this.content_container_id);
-
-        this.rendered_story_cids = [];
+        this.story_view_model_ids = [];
 
         // listen for story model categories update
         _.bindAll(this, "add_story_view");
-        this.collection.bind("change:story:categories", this.add_story_view);
+        this.collection.on("categories:update", this.add_story_view);
     },
 
     add_story_view: function(story) {
-        // only render in this view if assoc. w/ this category & not already rendered
-        if (_.indexOf(story.get("categories"), this.category) > -1 && _.indexOf(this.rendered_story_cids, story.cid) === -1) {
+        var story_categories = story.get("categories");
+
+        // this category is in story's categories array
+        // this story's model cid isn't in displayed story models' cids array
+        if (_.indexOf(story_categories, this.category) > -1 && _.indexOf(this.story_view_model_ids, story.cid) === -1) {
             var story_view = new par.nyt.Story_View({
                 model: story
             });
             this.$content.append(story_view.render().el);
-            // add cid to rendered story cids
-            this.rendered_story_cids.push(story.cid);
+            // add story model id to array of displayed story views
+            this.story_view_model_ids.splice(0, 0, story.cid);
         }
     },
 
     remove_story_view: function(story) {
-        // remove cid from rendered story cids
-        this.rendered_story_cids = _.without(this.rendered_story_cids, story.cid);
     }
 });
 

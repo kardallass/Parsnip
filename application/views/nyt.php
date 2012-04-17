@@ -22,7 +22,7 @@
             </div>
             <div>&copy; Tara Marchand</div>
         </div>
-        <script src="<?= $this->assets_url ?>js/libraries/jquery-1.7.1.min.js"></script>
+        <script src="<?= $this->assets_url ?>js/libraries/jquery-1.7.2.min.js"></script>
         <script src="<?= $this->assets_url ?>js/libraries/base64_min.js"></script>
         <script src="<?= $this->assets_url ?>js/libraries/underscore-min.js"></script>
         <script src="<?= $this->assets_url ?>js/libraries/backbone.js"></script>

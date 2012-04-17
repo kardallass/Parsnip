@@ -1,100 +1,124 @@
 par.App = Backbone.View.extend({
     initialize: function() {
-        par.App.nyt = par.App.nyt || {};
+        this.nyt = this.nyt || {};
+        this.nyt.all_stories_collection = new par.nyt.Story_List(); // collection
 
-        var categories = ["mostemailed", "mostshared", "mostviewed"],
-        category,
-        category_views = [],
-        all_stories = new par.nyt.Story_List(),
-        name = "",
-        provider = "",
-        service = "",
-        api_values = null,
-        ajax_url = "",
-        title = "";
+        var self = this,
+            categories = ["mostemailed", "mostshared", "mostviewed", "favorites"],
+            //categories = ["mostemailed", "mostshared", "mostviewed"],
+            //categories = ["favorites"],
+            category,
+            category_views = [],
+            name = "",
+            provider = "",
+            service = "",
+            api_values = null,
+            ajax_url = "",
+            ajax_data = null,
+            title = "";
 
-        var create_stories_and_list_views = function(data, category) {
-            // create story models and add them to this collection
-            var stories = data.results,
-            stories_length = stories.length,
-            new_story,
-            new_story_model;
+        var get_story_models = function(data, _category) {
+            var stories = (_category !== "favorites") ? data.results : data,
+                story,
+                story_model,
+                story_categories;
 
-            // create category's story list view
-            par.App.nyt[category + "_view"] = new par.nyt.Story_List_View({
-                category: category,
-                template_values: {
-                    category: category,
-                    icon_class: "icon-list-alt",
-                    title: "Most Popular - " + category
-                },
-                tab_container_id: "popular_tabs",
-                content_container_id: "popular_content",
-                collection: all_stories
-            });
+            for (var j = 0, stories_length = stories.length; j < stories_length; j += 1) {
+                story = stories[j];
 
-            // add favorite stories list view to end & select first tab 
-            if (category === categories[categories.length - 1]) {
-                create_favorites_list_view();
-                $("#popular_tabs").find("a:first").tab("show");
-            }
-
-            // go through all stories and determine which categories they're associated with
-            for (var j = 0; j < stories_length; j += 1) {
-                new_story = stories[j];
                 // use existing story models for items w/same URLs
-                if (!all_stories.any(function(story_model) { return story_model.get("url") === new_story.url })) {
-                    new_story_model = new par.nyt.Story(new_story);
-                    all_stories.add(new_story_model);
-                } else {
-                    new_story_model = all_stories.find(function(story_model) { return story_model.get("url") === new_story.url });
+                story_model = self.nyt.all_stories_collection.find(function(_story) {
+                    return _story.get("url") === story.url;
+                });
+                if (!story_model) {
+                    story_model = new par.nyt.Story(story);
+                    self.nyt.all_stories_collection.add(story_model);
                 }
-                // update story model's associated categories
-                var new_story_categories = new_story_model.get("categories");
-                new_story_categories.push(category);
-                new_story_model.set("categories", new_story_categories);
-                // custom event triggered for adding story view to story list view
-                all_stories.trigger("change:story:categories", new_story_model);
+
+                // set as favorite or add category
+                if (_category === "favorites") {
+                    story_model.set("is_favorite", true);
+                } else {
+                    story_categories = story_model.get("categories");
+                    story_categories.splice(0, 0, _category);
+                    story_model.set("categories", story_categories);
+                }
+                self.nyt.all_stories_collection.trigger("categories:update", story_model);
             }
         };
 
-        var create_favorites_list_view = function() {
-            par.App.nyt.favorites_view = new par.nyt.Story_List_View({
-                category: "favorites",
+        var create_list_view = function(data, _category) {
+            // create story models and add them to this collection
+            var icon_class = (_category !== "favorites") ? "icon-list-alt" : "icon-heart",
+                title = (_category !== "favorites") ? "Most Popular - " + _category : "My Favorites",
+                category_view_name = _category + "_collection_view";
+
+            // create category's story list view
+            self.nyt[category_view_name] = new par.nyt.Story_List_View({
+                category: _category,
                 template_values: {
-                    category: "favorites",
-                    icon_class: "icon-heart",
-                    title: "My Favorites"
+                    category: _category,
+                    icon_class: icon_class,
+                    title: title
                 },
                 tab_container_id: "popular_tabs",
                 content_container_id: "popular_content",
-                collection: all_stories
+                collection: self.nyt.all_stories_collection
             });
+
+            // override add_story_view method for favorites
+            //if (_category === "favorites") {
+                //self.nyt[category_view_name].add_story_view = function(story) {
+                    //if (story.get("is_favorite") && _.indexOf(this.story_view_model_ids, story.cid) === -1) {
+                        //var story_view = new par.nyt.Story_View({
+                            //model: story
+                        //});
+                        //this.$content.append(story_view.render().el);
+                        //// add story model id to array of displayed story views
+                        //this.story_view_model_ids.splice(0, 0, story.cid);
+                    //}
+                //};
+            //}
+
+            // add favorite stories list view to end & select first tab 
+            if (_category === categories[categories.length - 1]) {
+                $("#popular_tabs").find("a:first").tab("show");
+            }
         };
 
         // create popular stories collections & collection views
         for (var i = 0; i < categories.length; i += 1) {
             category = categories[i];
-            provider = "nyt";
-            service = "popular";
-            api_values = par[provider].apis[service];
-            ajax_url = "nyt/popular/" + category;
 
-            // make the ajax call, passing current category value
+            // make the ajax call, passing current category
+            if (category !== "favorites") {
+                provider = "nyt";
+                service = "popular";
+                api_values = par[provider].apis[service];
+                ajax_url = "nyt/popular/" + category;
+                ajax_data = {
+                    "host": api_values.host,
+                    "port": api_values.port,
+                    "provider": provider,
+                    "service": service,
+                    "charles": par.use_charles
+                };
+            } else {
+                ajax_url = "nyt/favorites";
+                ajax_data = {
+                    "charles": par.use_charles
+                };
+            }
+
             (function(cat) {
                 $.ajax(ajax_url, {
-                    data: {
-                        "host": api_values.host,
-                        "port": api_values.port,
-                        "provider": provider,
-                        "service": service,
-                        "charles": par.use_charles
-                    },
+                    data: ajax_data,
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log(errorThrown);
                     },
                     success: function(data) {
-                        create_stories_and_list_views(data, cat);
+                        create_list_view(data, cat);
+                        get_story_models(data, cat);
                     }
                 });
             })(category);
