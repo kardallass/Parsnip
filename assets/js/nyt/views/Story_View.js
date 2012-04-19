@@ -33,10 +33,16 @@ par.nyt.Story_View = Backbone.View.extend({
         var is_favorite = this.get_is_favorite();
 
         if (!is_favorite) {
-            this.model.save();
+            change_to = true;
         } else {
-            this.model.destroy();
+            change_to = false;
         }
+
+        this.model.save({
+            is_favorite: change_to
+        }, {
+            url: par.constants.base_url + "nyt/favorites/"
+        });
     },
 
     toggle_favorite: function() {

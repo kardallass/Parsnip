@@ -17,6 +17,51 @@ par.App = Backbone.View.extend({
             ajax_data = null,
             title = "";
 
+        var bind_favorites_event_handler = function() {
+            var favorites_collection_view = self.nyt.favorites_collection_view;
+
+            favorites_collection_view.collection.on("categories:update", function(story) {
+                if (story.get("is_favorite") && _.indexOf(favorites_collection_view.story_view_model_ids, story.cid) === -1) {
+                    var story_view = new par.nyt.Story_View({
+                        model: story
+                    });
+                    favorites_collection_view.$content.append(story_view.render().el);
+                    // add story model id to array of displayed story views
+                    favorites_collection_view.story_view_model_ids.splice(0, 0, story.cid);
+                }
+            });
+        };
+
+        var create_list_view = function(data, _category) {
+            // create story models and add them to this collection
+            var icon_class = (_category !== "favorites") ? "icon-list-alt" : "icon-heart",
+                title = (_category !== "favorites") ? "Most Popular - " + _category : "My Favorites",
+                category_view_name = _category + "_collection_view";
+
+            // create category's story list view
+            self.nyt[category_view_name] = new par.nyt.Story_List_View({
+                category: _category,
+                template_values: {
+                    category: _category,
+                    icon_class: icon_class,
+                    title: title
+                },
+                tab_container_id: "popular_tabs",
+                content_container_id: "popular_content",
+                collection: self.nyt.all_stories_collection
+            });
+
+            // add favorites
+            if (_category === "favorites") {
+                bind_favorites_event_handler();
+            }
+
+            // add favorite stories list view to end & select first tab 
+            if (_category === categories[categories.length - 1]) {
+                $("#popular_tabs").find("a:first").tab("show");
+            }
+        };
+
         var get_story_models = function(data, _category) {
             var stories = (_category !== "favorites") ? data.results : data,
                 story,
@@ -44,45 +89,6 @@ par.App = Backbone.View.extend({
                     story_model.set("categories", story_categories);
                 }
                 self.nyt.all_stories_collection.trigger("categories:update", story_model);
-            }
-        };
-
-        var create_list_view = function(data, _category) {
-            // create story models and add them to this collection
-            var icon_class = (_category !== "favorites") ? "icon-list-alt" : "icon-heart",
-                title = (_category !== "favorites") ? "Most Popular - " + _category : "My Favorites",
-                category_view_name = _category + "_collection_view";
-
-            // create category's story list view
-            self.nyt[category_view_name] = new par.nyt.Story_List_View({
-                category: _category,
-                template_values: {
-                    category: _category,
-                    icon_class: icon_class,
-                    title: title
-                },
-                tab_container_id: "popular_tabs",
-                content_container_id: "popular_content",
-                collection: self.nyt.all_stories_collection
-            });
-
-            // override add_story_view method for favorites
-            //if (_category === "favorites") {
-                //self.nyt[category_view_name].add_story_view = function(story) {
-                    //if (story.get("is_favorite") && _.indexOf(this.story_view_model_ids, story.cid) === -1) {
-                        //var story_view = new par.nyt.Story_View({
-                            //model: story
-                        //});
-                        //this.$content.append(story_view.render().el);
-                        //// add story model id to array of displayed story views
-                        //this.story_view_model_ids.splice(0, 0, story.cid);
-                    //}
-                //};
-            //}
-
-            // add favorite stories list view to end & select first tab 
-            if (_category === categories[categories.length - 1]) {
-                $("#popular_tabs").find("a:first").tab("show");
             }
         };
 
