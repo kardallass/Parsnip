@@ -1,9 +1,11 @@
+/* line 3, ../sass/parsnip.scss */
 #popular_content .favorite {
-    display: inline-block;
-    text-align: center;
-    width: 3%;
+  display: inline-block;
+  text-align: center;
+  width: 4%;
 }
 
+/* line 9, ../sass/parsnip.scss */
 #popular_content .selected {
-    color: #ccc;
+  color: #ccc;
 }

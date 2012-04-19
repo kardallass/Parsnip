@@ -15,10 +15,15 @@
             <div id="popular_content" class="tab-content"></div>
             <hr>
             <div id="uses">
+                <a href="http://codeigniter.com/" class="btn">CodeIgniter</a>
+                <a href="http://www.mongodb.org/" class="btn">MongoDB</a>
                 <a href="http://twitter.github.com/bootstrap/" class="btn">Bootstrap</a>
                 <a href="http://www.jquery.com/" class="btn">jQuery</a>
-                <a href="http://backbonejs.org" class="btn">Backbone.js</a>
+                <a href="http://underscorejs.org/" class="btn">Underscore.js</a>
+                <a href="http://backbonejs.org/" class="btn">Backbone.js</a>
                 <a href="https://github.com/janl/mustache.js" class="btn">Mustache.js</a>
+                <a href="http://compass-style.org/" class="btn">Compass</a>
+
             </div>
             <div>&copy; Tara Marchand</div>
         </div>

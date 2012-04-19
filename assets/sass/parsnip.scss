@@ -1,0 +1,12 @@
+@import "base";
+
+#popular_content .favorite {
+    display: inline-block;
+    text-align: center;
+    width: 4%;
+}
+
+#popular_content .selected {
+    color: #ccc;
+}
+
