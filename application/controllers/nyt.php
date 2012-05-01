@@ -53,12 +53,15 @@ class Nyt extends MY_Controller {
     }
 
     public function favorites($id = 'all') {
-        // connect
-        $parsnip = new Mongo();
+        include "../databases.php";
 
-        // select favorites database
-        $nyt_stories = $parsnip->nyt_stories; // database
-        $nyt_favorites = $nyt_stories->favorites; // collection
+        // connect to db on mongolab.com
+        $mongo_connect_string = "mongodb://" . $databases["parsnip"]["username"] . ":" . $databases["parsnip"]["password"] . "@" . $databases["parsnip"]["host"] . ":" . $databases["parsnip"]["port"] . "/parsnip";
+        $mongo_connection = new Mongo($mongo_connect_string);
+        $parsnip_db = $mongo_connection->parsnip;
+
+        // select nyt_favorites collection
+        $nyt_favorites = $parsnip_db->nyt_favorites; // collection
         $request_method = $_SERVER['REQUEST_METHOD'];
         if ($id == 'all') {
 
