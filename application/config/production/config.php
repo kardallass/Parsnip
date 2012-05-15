@@ -14,8 +14,9 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost/parsnip/';
+$config['base_url']	= '';
 
+$config['values_include_path'] = '/home/tara/phpvalues/';
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -180,7 +181,7 @@ $config['directory_trigger']	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 0;
 
 /*
 |--------------------------------------------------------------------------
@@ -330,7 +331,7 @@ $config['compress_output'] = FALSE;
 */
 $config['time_reference'] = 'local';
 
-$config['values_include_path'] = '/Users/taram/Documents/Projects/localhost/';
+
 /*
 |--------------------------------------------------------------------------
 | Rewrite PHP Short Tags

@@ -18,7 +18,12 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
+if (strpos($_SERVER['HTTP_HOST'], 'tmarchand.com')) {
+	define('ENVIRONMENT', 'production');
+} else {
 	define('ENVIRONMENT', 'development');
+}
+
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

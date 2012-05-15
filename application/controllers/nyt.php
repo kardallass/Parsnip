@@ -12,7 +12,7 @@ class Nyt extends MY_Controller {
 
     public function popular($category) {
         $this->load->spark('curl/1.2.1');
-        include "../api_keys.php";
+        include $this->config->item("values_include_path") . "api_keys.php";
 
         // params that shouldn't be passed along in request
         $params_to_exclude = array("charles", "host", "port", "category", "provider", "service");
@@ -53,7 +53,7 @@ class Nyt extends MY_Controller {
     }
 
     public function favorites($id = 'all') {
-        include "../databases.php";
+        include $this->config->item('values_include_path') . "databases.php";
 
         // connect to db on mongolab.com
         $mongo_connect_string = "mongodb://" . $databases["parsnip"]["username"] . ":" . $databases["parsnip"]["password"] . "@" . $databases["parsnip"]["host"] . ":" . $databases["parsnip"]["port"] . "/parsnip";
