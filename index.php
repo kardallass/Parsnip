@@ -18,7 +18,8 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-if (strpos($_SERVER['HTTP_HOST'], 'tmarchand.com')) {
+$host = $_SERVER['HTTP_HOST'];
+if (strpos($host, 'tmarchand.com') !== false) {
 	define('ENVIRONMENT', 'production');
 } else {
 	define('ENVIRONMENT', 'development');

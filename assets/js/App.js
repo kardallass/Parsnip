@@ -68,27 +68,31 @@ par.App = Backbone.View.extend({
                 story_model,
                 story_categories;
 
-            for (var j = 0, stories_length = stories.length; j < stories_length; j += 1) {
-                story = stories[j];
+            try {
+                for (var j = 0, stories_length = stories.length; j < stories_length; j += 1) {
+                    story = stories[j];
 
-                // use existing story models for items w/same URLs
-                story_model = self.nyt.all_stories_collection.find(function(_story) {
-                    return _story.get("url") === story.url;
-                });
-                if (!story_model) {
-                    story_model = new par.nyt.Story(story);
-                    self.nyt.all_stories_collection.add(story_model);
-                }
+                    // use existing story models for items w/same URLs
+                    story_model = self.nyt.all_stories_collection.find(function(_story) {
+                        return _story.get("url") === story.url;
+                    });
+                    if (!story_model) {
+                        story_model = new par.nyt.Story(story);
+                        self.nyt.all_stories_collection.add(story_model);
+                    }
 
-                // set as favorite or add category
-                if (_category === "favorites") {
-                    story_model.set("is_favorite", true);
-                } else {
-                    story_categories = story_model.get("categories");
-                    story_categories.splice(0, 0, _category);
-                    story_model.set("categories", story_categories);
+                    // set as favorite or add category
+                    if (_category === "favorites") {
+                        story_model.set("is_favorite", true);
+                    } else {
+                        story_categories = story_model.get("categories");
+                        story_categories.splice(0, 0, _category);
+                        story_model.set("categories", story_categories);
+                    }
+                    self.nyt.all_stories_collection.trigger("categories:update", story_model);
                 }
-                self.nyt.all_stories_collection.trigger("categories:update", story_model);
+            } catch(e) {
+                console.log(e);
             }
         };
 
@@ -119,8 +123,10 @@ par.App = Backbone.View.extend({
             (function(cat) {
                 $.ajax(ajax_url, {
                     data: ajax_data,
+                    dataType: "json",
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log(errorThrown);
+                        console.log(textStatus);
                     },
                     success: function(data) {
                         create_list_view(data, cat);
