@@ -105,9 +105,9 @@ par.App = Backbone.View.extend({
                 provider = "nyt";
                 service = "popular";
                 api_values = par[provider].apis[service];
-                ajax_url = "nyt/popular/" + category;
+                ajax_url = "nyt/popular/" + category + "?host=" + api_values.host;
                 ajax_data = {
-                    "host": api_values.host,
+                    // "host": api_values.host,
                     "port": api_values.port,
                     "provider": provider,
                     "service": service,
@@ -122,6 +122,7 @@ par.App = Backbone.View.extend({
 
             (function(cat) {
                 $.ajax(ajax_url, {
+                    contentType: "application/json; charset=utf-8",
                     data: ajax_data,
                     dataType: "json",
                     error: function(jqXHR, textStatus, errorThrown) {
