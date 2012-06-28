@@ -1,5 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+//error_reporting(E_ALL); 
+//ini_set( 'display_errors','1');
+
 class Nyt extends MY_Controller {
 
     public function _output($output) {
@@ -45,7 +48,7 @@ class Nyt extends MY_Controller {
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_FAILONERROR => true
                 ));
-                header("Content-Type: application/json");
+                //header("Content-Type: application/json");
                 echo $this->curl->execute();
             }
 
@@ -57,47 +60,54 @@ class Nyt extends MY_Controller {
 
         // connect to db on mongolab.com
         $mongo_connect_string = "mongodb://" . $databases["parsnip"]["username"] . ":" . $databases["parsnip"]["password"] . "@" . $databases["parsnip"]["host"] . ":" . $databases["parsnip"]["port"] . "/parsnip";
-        $mongo_connection = new Mongo($mongo_connect_string);
-        $parsnip_db = $mongo_connection->parsnip;
+        try {
+            // print every log message possible
+            MongoLog::setLevel(MongoLog::ALL); // all log levels
+            MongoLog::setModule(MongoLog::ALL); // all parts of the driver
+           
+            $mongo_connection = new Mongo($mongo_connect_string, array("connect" => true, "timeout" => 100000));
+            $parsnip_db = $mongo_connection->parsnip;
 
-        // select nyt_favorites collection
-        $nyt_favorites = $parsnip_db->nyt_favorites; // collection
-        $request_method = $_SERVER['REQUEST_METHOD'];
-        if ($id == 'all') {
+            // select nyt_favorites collection
+            $nyt_favorites = $parsnip_db->nyt_favorites; // collection
+            $request_method = $_SERVER['REQUEST_METHOD'];
+            if ($id == 'all') {
 
-            if ($request_method == "POST") { // POST 'all' -- create all
-                $data_string = file_get_contents("php://input");
-                $data_array = json_decode($data_string, true);
+                if ($request_method == "POST") { // POST 'all' -- create all
+                    $data_string = file_get_contents("php://input");
+                    $data_array = json_decode($data_string, true);
 
-                // insert data
-                try {
-                    $nyt_favorites->insert($data_array, array("safe" => true));
-                } catch (MongoCursorException $e) {
-                    echo "error message: " . $e->getMessage() . "\n";
-                    echo "error code: " . $e->getCode();
+                    // insert data
+                    try {
+                        $nyt_favorites->insert($data_array, array("safe" => true));
+                    } catch (MongoCursorException $e) {
+                        echo "error message: " . $e->getMessage() . "\n";
+                        echo "error code: " . $e->getCode();
+                    }
+
+                } else if ($request_method == "GET") { // GET 'all' -- read all
+                    //echo "get all";
+                    $nyt_favorites_cursor = $nyt_favorites->find();
+                    $return = array();
+                    foreach ($nyt_favorites_cursor as $object) {
+                        array_push($return, $object);
+                    }
+                    echo json_encode($return);
                 }
 
-            } else if ($request_method == "GET") { // GET 'all' -- read all
-                //echo "get all";
-                $nyt_favorites_cursor = $nyt_favorites->find();
-                $return = array();
-                foreach ($nyt_favorites_cursor as $object) {
-                    array_push($return, $object);
+            } else {
+
+                if ($request_method == "GET") { // GET [id] -- read [id]
+                    echo "get " . $id;
+                } else if ($request_method == "PUT") { // PUT [id] -- update [id]
+                    echo "put " . $id;
+                } else if ($request_method == "DELETE") { // DELETE [id] -- delete [id]
+                    echo "delete " . $id;
                 }
-                header('Content-Type: application/json');
-                echo json_encode($return);
+
             }
-
-        } else {
-
-            if ($request_method == "GET") { // GET [id] -- read [id]
-                echo "get " . $id;
-            } else if ($request_method == "PUT") { // PUT [id] -- update [id]
-                echo "put " . $id;
-            } else if ($request_method == "DELETE") { // DELETE [id] -- delete [id]
-                echo "delete " . $id;
-            }
-
+        } catch(MongoConnectionException $e) {
+            die ($e->getMessage());
         }
 
     }
