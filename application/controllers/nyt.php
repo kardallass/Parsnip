@@ -62,10 +62,10 @@ class Nyt extends MY_Controller {
         $mongo_connect_string = "mongodb://" . $databases["parsnip"]["username"] . ":" . $databases["parsnip"]["password"] . "@" . $databases["parsnip"]["host"] . ":" . $databases["parsnip"]["port"] . "/parsnip";
         try {
             // print every log message possible
-            MongoLog::setLevel(MongoLog::ALL); // all log levels
+            MongoLog::setLevel(MongoLog::INFO); // all log levels
             MongoLog::setModule(MongoLog::ALL); // all parts of the driver
            
-            $mongo_connection = new Mongo($mongo_connect_string, array("connect" => true, "timeout" => 100000));
+            $mongo_connection = new MongoClient($mongo_connect_string, array("connect" => true, "timeout" => 100000));
             $parsnip_db = $mongo_connection->parsnip;
 
             // select nyt_favorites collection

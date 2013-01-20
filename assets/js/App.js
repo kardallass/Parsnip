@@ -126,6 +126,7 @@ par.App = Backbone.View.extend({
                     data: ajax_data,
                     dataType: "json",
                     error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(cat);
                         console.log(errorThrown);
                         console.log(textStatus);
                     },
